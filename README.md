@@ -32,11 +32,17 @@ Objects can contain code, actions, and attribute values. Codes are values that c
 A quick example:
 
 create Talker
+
 drop talker
+
 code talker:talk=me.cmd("say Hello!")
+
 action talker:talk=talk
+
 talk
+
 Talker says, "Hello!"
+
 
 Special notes:
 
