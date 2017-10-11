@@ -6,6 +6,7 @@ class Command
 		@prefixes = []
 		@shortcut = nil
 		@help = ""
+		@broadcaster = nil
 	end
 
 	def should_respond?(c)

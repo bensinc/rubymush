@@ -61,6 +61,28 @@ class Examine < Command
 						end
 
 						back << "#{list.chop}\n"
+
+					end
+
+					if t.codes.size > 0 # && t.owner == thing
+						back << "Code:\n"
+						for code in t.codes
+							back << " #{code.name}: #{code.code}\n"
+						end
+					end
+
+					if t.actions.size > 0 # && t.owner == thing
+						back << "Actions:\n"
+						for action in t.actions
+							back << " #{action.name}: #{action.code}\n"
+						end
+					end
+
+					if t.atts.size > 0 # && t.owner == thing
+						back << "Attributes:\n"
+						for att in t.atts
+							back << " #{att.name}: #{att.value}\n"
+						end
 					end
 
 

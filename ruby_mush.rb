@@ -4,7 +4,8 @@ gem 'activerecord'
 gem 'colorize'
 require 'active_record'
 require 'colorize'
-
+require 'v8'
+require 'yaml'
 
 puts "--+ Starting RubyMush..."
 
@@ -14,14 +15,22 @@ CONNECTIONS = Hash.new
 COMMANDS = Array.new
 
 
+db_info = YAML.load(File.open('db/config.yml').read)['development']
+
+
 ActiveRecord::Base.establish_connection(
-  adapter: "mysql2",
-  database: "rubymush",
-  username: "root",
-  password: ""
+  adapter: db_info['adapter'],
+  database: db_info['database'],
+  username: db_info['username'],
+  password: db_info['password']
 )
 
 require_relative 'models/thing.rb'
+require_relative 'models/code.rb'
+require_relative 'models/action.rb'
+require_relative 'models/att.rb'
+
+require_relative 'lib/mush_interface.rb'
 
 puts "--+ Loading commands:"
 
@@ -250,7 +259,48 @@ module MushServer
       return
 		end
 
+    # Check for commands
+
+    # Self, location, things in location
+
+    cmd = command.split(' ')[0].downcase
+    # puts "--+ Checking for action: #{cmd}"
+    action = @user.actions.where(name: cmd).first
+    unless action
+      action = @user.location.actions.where(name: cmd).first
+    end
+    unless action
+      for thing in @user.things.where(kind: 'object')
+        action = thing.actions.where(name: cmd).first
+        break if action
+      end
+    end
+    unless action
+      for thing in @user.location.things.where(kind: 'object')
+        action = thing.actions.where(name: cmd).first
+        break if action
+      end
+    end
+
+    if action
+      puts "--+ Running action: #{action.name} on #{action.thing.name_ref}"
+      code = action.thing.codes.where(name: action.code).first
+      if code
+        begin
+          action.thing.execute(action.code, command.split(' ')[1..-1].join(' '))
+          return(nil)
+        rescue Exception => e
+          return("Error: #{e}\n")
+        end
+      else
+        return("Code #{name} not found on #{action.thing.name_ref}!\n")
+      end
+      return
+    end
+
 		send_data("What was that, #{@user.name}?\n")
+
+
 
 	end
 

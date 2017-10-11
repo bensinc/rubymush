@@ -1,4 +1,5 @@
 require_relative 'command'
+require_relative '../lib/broadcaster.rb'
 class Say < Command
 
 	def initialize
@@ -20,7 +21,9 @@ class Say < Command
 	def process(thing, command)
 		message = @parts[1..-1].join(' ')
 		message = command[1..-1] if command.start_with?('"')
-		thing.location.broadcast(CONNECTIONS, thing, "#{thing.name} said, \"#{message}\"\n")
+		b = Broadcaster.new(thing, CONNECTIONS)
+		b.broadcast_location("#{thing.name} says, \"#{message}\"\n")
+		# thing.location.broadcast(CONNECTIONS, thing, "#{thing.name} says, \"#{message}\"\n")
 		return("You said, \"#{message}\"\n")
 	end
 

@@ -4,7 +4,7 @@ class Doing < Command
 	def initialize
 		@name = "doing"
 
-		@prefixes = ['doing']
+		@prefixes = ['doing', '@doing']
 		@shortcut = nil
 
 		@help = "doing <message> - Sets your \"doing\" message, as seen in the \"who\" command."
