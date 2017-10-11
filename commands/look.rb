@@ -31,23 +31,26 @@ class Look < Command
 				back << "#{t.name_ref}\nYou see nothing special.\n"
 			end
 
-			for o in t.things.where(["kind != 'exit' and id != ?", thing.id])
-				back << "#{o.name_ref}\n" if o.kind == 'object' || (o.kind == 'player' && o.connected?)
-			end
+			if t.kind != 'player'
 
-			exits = Thing.where(location_id: t.id, kind: 'exit')
-
-			if exits.size > 0
-
-				# puts "Exits: #{exits.size}"
-				back << "Exits:\n"
-				list = ""
-				for ex in exits
-					# puts "#{ex.name}, #{ex.id}, #{ex.location_id}"
-					list << ex.name << ", "
+				for o in t.things.where(["kind != 'exit' and id != ?", thing.id])
+					back << "#{o.name_ref}\n" if o.kind == 'object' || (o.kind == 'player' && o.connected?)
 				end
-				list.chop!.chop!
-				back << "#{list}\n"
+
+				exits = Thing.where(location_id: t.id, kind: 'exit')
+
+				if exits.size > 0
+
+					# puts "Exits: #{exits.size}"
+					back << "Exits:\n"
+					list = ""
+					for ex in exits
+						# puts "#{ex.name}, #{ex.id}, #{ex.location_id}"
+						list << ex.name << ", "
+					end
+					list.chop!.chop!
+					back << "#{list}\n"
+				end
 			end
 			return(back)
 		else
