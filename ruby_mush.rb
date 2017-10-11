@@ -327,5 +327,5 @@ end
 # Note that this will block current thread.
 EventMachine.run {
 	puts "--+ Started!"
-	EventMachine.start_server "127.0.0.1", 8081, MushServer
+	EventMachine.start_server "0.0.0.0", 8081, MushServer
 }
