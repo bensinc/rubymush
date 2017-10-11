@@ -66,7 +66,7 @@ class Thing < ActiveRecord::Base
     cxt['me'] = self
 		cxt['params'] = params
 		cxt['mush'] = MushInterface.new(self)
-		puts code.code
+		# puts code.code
     cxt.eval(code.code)
 	end
 

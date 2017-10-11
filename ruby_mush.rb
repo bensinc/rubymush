@@ -6,6 +6,7 @@ require 'active_record'
 require 'colorize'
 require 'v8'
 require 'yaml'
+require 'concurrent'
 
 puts "--+ Starting RubyMush..."
 
@@ -49,7 +50,7 @@ Dir.glob('commands/*rb') do |item|
 end
 
 
-for player in Thing.where(kind: 'player')
+for player in Thing.where(kind: 'player', connected: true)
 	player.connected = false
 	player.save
 end
@@ -109,9 +110,8 @@ module MushServer
 		puts "--+ #{user.name} logged in"
 
     for c in COMMANDS
-      puts "Checking: #{c.name}"
+      # puts "Checking: #{c.name}"
       if c.name == 'look'
-        puts "LOOK!"
         result = c.execute(@user, "look")
         if result
           send_data(result)
@@ -325,6 +325,20 @@ end
 
 
 # Note that this will block current thread.
+
+task = Concurrent::TimerTask.new {
+  puts "--+ Tick!"
+  for code in Code.where(name: 'tick')
+      code.thing.execute(code.name, nil)
+  end
+}
+
+task.execution_interval = 5 #=> 5 (default)
+task.timeout_interval = 30  #=> 30 (default)
+
+task.execute
+
+
 EventMachine.run {
 	puts "--+ Started!"
 	EventMachine.start_server "0.0.0.0", 8081, MushServer

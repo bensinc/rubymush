@@ -27,8 +27,8 @@ class MushInterface
 
 	def fetch(url)
 		response = HTTParty.get(url)
-		puts "Response"
-		puts response
+		# puts "Response"
+		# puts response
 		json = JSON.parse(response.body)
 		# puts json
 		return json
