@@ -261,12 +261,15 @@ module MushServer
 	end
 
 	def unbind
-		@user.connected = false
-		@user.save
-		CONNECTIONS.delete(@user.id)
-		@user.location.broadcast(CONNECTIONS, @user, "#{@user.name} has disconnected.\n")
-		puts "--+ #{@user.name} logged out"
+
 		puts "--+ Connection closed"
+    if @user
+  		@user.connected = false
+  		@user.save
+  		CONNECTIONS.delete(@user.id)
+  		@user.location.broadcast(CONNECTIONS, @user, "#{@user.name} has disconnected.\n")
+  		puts "--+ #{@user.name} logged out"
+    end
 	end
 end
 
