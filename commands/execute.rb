@@ -29,7 +29,7 @@ class Execute < Command
 						t.execute(name, nil)
 						return(nil)
 					rescue Exception => e
-						return("Error: #{e}")
+						return("Error: #{e}\n")
 						# return("Error: #{e}\n#{e.backtrace}\n")
 					end
 				else
