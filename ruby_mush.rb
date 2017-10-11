@@ -190,7 +190,7 @@ module MushServer
 
 			# General commands
 
-			puts "--+ Command received: #{command}"
+			# puts "--+ Command received: #{command}"
 
 			return if command == nil || command == ''
 
@@ -198,7 +198,7 @@ module MushServer
 			for c in COMMANDS
 				# puts "Checking: #{c}"
 				if c.should_respond?(command)
-					puts "  + Command responding: #{c.name}"
+					# puts "  + Command responding: #{c.name}"
 					result = c.execute(@user, command)
 					if result
 						send_data(result)
