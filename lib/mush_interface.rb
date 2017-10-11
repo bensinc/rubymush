@@ -1,3 +1,5 @@
+require 'httparty'
+
 class MushInterface
 	def initialize(thing)
 		@thing = thing
@@ -21,5 +23,14 @@ class MushInterface
 			else
 				return Thing.where(["name like ? and location_id in (?)", "#{q}%", [@thing.id, @thing.location_id]]).first
 			end
+	end
+
+	def fetch(url)
+		response = HTTParty.get(url)
+		puts "Response"
+		puts response
+		json = JSON.parse(response.body)
+		# puts json
+		return json
 	end
 end
