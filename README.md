@@ -42,14 +42,14 @@ Special notes:
 
 Inside your js code, "me" refers to the object the code is running on. "Me" has some special functions:
 
-* To run normal user commands, use: me.cmd("<command>")
+* To run normal user commands, use: me.cmd("command")
 * Set an attribute: me.set('name', 'value')
 * Get an attribute: me.get('name')
    Note: Anything you get will be a string, so you'll need to convert types if needed. i.e. var x = parseInt(m.get('x'))
 
 A "mush" object is also available that provides additional functions:
 
-* Find another object: mush.find('<name or id>')
-* Fetch a JSON URL: mush.fetch('<url>');
+* Find another object: mush.find('name or id')
+* Fetch a JSON URL: mush.fetch('url');
 
 More features to come!
