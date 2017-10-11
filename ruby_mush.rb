@@ -10,7 +10,7 @@ require 'concurrent'
 
 puts "--+ Starting RubyMush..."
 
-START_LOCATION = 5
+START_LOCATION = 22
 
 CONNECTIONS = Hash.new
 COMMANDS = Array.new

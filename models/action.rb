@@ -1,7 +1,7 @@
 class Action < ActiveRecord::Base
 	belongs_to :thing
 	def execute(command)
-		puts "--+ Running action: #{action.name} on #{action.thing.name_ref}"
+		# puts "--+ Running action: #{action.name} on #{action.thing.name_ref}"
 		code = self.thing.codes.where(name: self.code).first
 		if code
 			begin
