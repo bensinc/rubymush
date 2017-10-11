@@ -58,4 +58,6 @@ A "mush" object is also available that provides additional functions:
 * Find another object: mush.find('name or id')
 * Fetch a JSON URL: mush.fetch('url');
 
+Special note: The server will "tick" every 5-10 seconds and run any code on your objects in a code attribute named "tick." Use this to make objects that perform tasks on their own.
+
 More features to come!
