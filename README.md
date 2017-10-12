@@ -68,20 +68,22 @@ Any object that enters a room will trigger the room's "entered" code, with the e
 
 If you choose to run the Rails app you'll get a dashboard that shows who's connected, and a way to more easily edit objects. You can also trigger commands on objects via a web service.
 
-All new objects are assigned a unique, secret key. Examine an object to see it, then search for that key in the web interface. From there you can change the description, attributes, and code. You can't add new items here, so make attributes and code online first.
+All new objects are assigned a unique, secret key. Examine an object to see the key, then search for that key in the web interface. If you need to reset a key, use the "resetkey" command online.
+
+From the web interface you can change the description, attributes, and code. You can't add new items here, so make attributes and code online first.
 
 A few services are also exposed:
 
 Update an attribute:
-POST to /object/<key>/attribute/<name> with a param of "value"
+POST to /object/:key/attribute/:name: with a param of "value"
 
 Update code:
-POST to /object/<key>/code/<name> with a param of "value"
+POST to /object/:key/code/:name with a param of "value"
 
 Update description:
-POST to /object/<key>/description with a param of "description"
+POST to /object/:key/description with a param of "description"
 
 Execute code on an object:
-POST to /object/<key>/execute/<code name> with params in "params"
+POST to /object/:key/execute/:code with params in "params"
 
 Remote code execution is done on a queue and should happen within 5s
