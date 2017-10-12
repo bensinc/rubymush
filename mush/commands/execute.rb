@@ -7,7 +7,7 @@ class Execute < Command
 		@prefixes = ['execute', 'exe']
 		@shortcut = nil
 
-		@help = "execute <ref>:<name> - Executes code <name> on <ref>"
+		@help = "execute <ref>:<name> - Executes code <name> on <ref>\nexecute <ref>:<name>=<params> - Executes code <name> on <ref> with <params>"
 	end
 
 	def execute(thing, command)
@@ -21,12 +21,17 @@ class Execute < Command
 
 			ref = @parts.join(' ').split(':')[0].strip
 			name = @parts.join(' ').split(':')[1].strip
+			params = nil
+			if name.include? '='
+				params = name.split('=')[1].strip
+				name = name.split('=')[0].strip
+			end
 			t = find_thing(thing, ref)
 			if t
 				code = t.codes.where(name: name).first
 				if code
 					begin
-						t.execute(name, nil)
+						t.execute(name, params)
 						return(nil)
 					rescue Exception => e
 						return("Error: #{e}\n")
