@@ -1,25 +1,23 @@
 # rubymush
 
-A MUSH, MUD, etc. implementation in Ruby.
+A MUSH, MUD, etc. implementation in Ruby. Includes a Rails web front-end for web services, coding, and other functions.
 
 **Special features:**
 
 * ActiveRecord for storage, so can run against MySQL, sqlite, etc.
 * EventMachine for networking
-* Uses the V8 JavaScript engine for in-mush coding
+* Uses the V8 JavaScript engine for in-mush coding (maybe it should be called jsMUSH?)
+* Rails web interface
 
 **Setup:**
 
-* Install the gems listed in ruby_mush.rb. TODO: Put this all in a Gemfile
-* Edit your db info in db/config.yml
-* rake db:create
-* rake db:migrate
-
+* Setup as a normal Rails app. i.e. bundle install, create db, etc. You don't need to run the Rails app unless you want the web interface.
 * Setup the first room (TODO, make this happen automatically):
   * Manually create a room in the database: insert into things (name,kind) values ('test room', 'object');
   * Edit ruby_mush.rb and set START_LOCATION to the thing ID, probably 1
 
-* Start the server: ruby ruby_mush.rb development
+* Start the server, found in the mush directory: ruby ruby_mush.rb development
+* telnet localhost 8081
 * Create a user, and you're in!
 
 

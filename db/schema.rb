@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171012122352) do
+ActiveRecord::Schema.define(version: 20171012212001) do
 
   create_table "actions", force: :cascade do |t|
     t.integer "thing_id", limit: 4
@@ -32,6 +32,14 @@ ActiveRecord::Schema.define(version: 20171012122352) do
     t.string  "url",      limit: 255
   end
 
+  create_table "queued_commands", force: :cascade do |t|
+    t.integer  "object_id",  limit: 4
+    t.string   "name",       limit: 255
+    t.string   "parameters", limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "things", force: :cascade do |t|
     t.integer  "owner_id",            limit: 4
     t.string   "name",                limit: 255
@@ -47,6 +55,8 @@ ActiveRecord::Schema.define(version: 20171012122352) do
     t.datetime "last_interaction_at"
     t.string   "doing",               limit: 255
     t.integer  "destination_id",      limit: 4
+    t.string   "salt",                limit: 255
+    t.string   "external_key",        limit: 255
   end
 
   create_table "users", force: :cascade do |t|

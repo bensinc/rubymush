@@ -44,6 +44,10 @@ class Examine < Command
 					back += " destination: #{t.destination.name_ref_color}\n"
 				end
 
+				if t.external_key
+					back += " external key: #{t.external_key}\n"
+				end
+
 
 				if t.things.size > 0
 					back += "Contents:\n".colorize(:light_blue)

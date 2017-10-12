@@ -1,3 +1,4 @@
+require 'securerandom'
 class Thing < ActiveRecord::Base
 	belongs_to :owner, foreign_key: 'owner_id', class_name: 'Thing'
 	belongs_to :location, foreign_key: 'location_id', class_name: 'Thing'
@@ -6,6 +7,8 @@ class Thing < ActiveRecord::Base
 	has_many :codes
 	has_many :actions
 	has_many :atts
+
+	before_create :reset_key
 
 	def name_ref
 		return "#{self.name} (#{self.id})"
@@ -97,7 +100,7 @@ class Thing < ActiveRecord::Base
 		# puts "Execute: #{name}, #{params}"
 		code = self.codes.where(name: name).first
 		if code
-	    cxt = V8::Context.new
+	    cxt = V8::Context.new(timeout: 10000)
 	    cxt['me'] = SafeThing.new(self)
 			cxt['params'] = params
 			cxt['mush'] = MushInterface.new(self)
@@ -126,6 +129,10 @@ class Thing < ActiveRecord::Base
 
 	def entered(thing)
 		self.execute('entered', thing.id)
+	end
+
+	def reset_key
+		self.external_key = SecureRandom.uuid
 	end
 
 

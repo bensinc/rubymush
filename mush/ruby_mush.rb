@@ -22,7 +22,7 @@ CONNECTIONS = Hash.new
 COMMANDS = Array.new
 
 
-db_info = YAML.load(File.open('db/config.yml').read)[ARGV[0]]
+db_info = YAML.load(File.open('../config/database.yml').read)[ARGV[0]]
 
 
 ActiveRecord::Base.establish_connection(
@@ -32,10 +32,12 @@ ActiveRecord::Base.establish_connection(
   password: db_info['password']
 )
 
-require_relative 'models/thing.rb'
-require_relative 'models/code.rb'
-require_relative 'models/action.rb'
-require_relative 'models/att.rb'
+require_relative '../app/models/thing.rb'
+require_relative '../app/models/code.rb'
+require_relative '../app/models/action.rb'
+require_relative '../app/models/att.rb'
+require_relative '../app/models/queued_command.rb'
+
 require_relative 'lib/safe_thing.rb'
 
 require_relative 'lib/mush_interface.rb'
@@ -76,6 +78,7 @@ end
 
 module MushServer
 	@user = nil
+  @http = false
 
 	def get_user
 		return @user
@@ -101,7 +104,9 @@ module MushServer
 
 	def post_init
 		puts "--+ New connection"
-		send_data File.read('welcome.txt')
+    task = Concurrent::ScheduledTask.execute(0.5) {
+      send_data File.read('welcome.txt') unless @http
+    }
 	end
 
 	def is_number?(obj)
@@ -151,6 +156,15 @@ module MushServer
 	end
 
 
+  def http_response(header, content_type, body)
+    send_data(header)
+    send_data("Date: #{Time.now}\n")
+    send_data("Content-Type: " + content_type)
+    send_data("\n\n")
+    send_data(body)
+  end
+
+
 
 
 	def parse_command(command)
@@ -159,16 +173,127 @@ module MushServer
 		parts = command.split(' ')
 		if @user == nil
 
+
+      # HTTP commands
+
+      if command.include? 'HTTP'
+        @http = true
+        puts command
+        lines = command.split("\n")
+        if lines[0].include? 'HTTP'
+          version = lines[0].split('HTTP/')[1].strip
+          header = "HTTP/#{version} 200 OK\n"
+
+          if lines[0].include? 'GET'
+            url = lines[0].split('GET ')[1].split(' HTTP')[0][1..-1].split('/')
+            # for part in url
+            #   puts part
+            # end
+
+            if url[0] == 'object'
+              object = Thing.where(external_key: url[1]).first
+              if object
+                if url[2] == 'code' and !url[3]
+                  html = "
+                    <html>
+                      <head>
+                        <title>#{object.name} - RubyMush</title>
+                      </head>
+                    </html>
+                    <body>
+
+                        <h1>#{object.name} - Code</h1>
+                  "
+                  for code in object.codes
+                    html += "<li><a href=\"/object/#{object.external_key}/code/#{code.name}\">#{code.name}</a></li>"
+                  end
+
+                  html += "
+                    </body>
+
+                  "
+                  http_response(header, "text/html", html)
+                elsif url[2] == 'code' and url[3]
+                  code = object.codes.where(name: url[3]).first
+                  unless code
+                    code = Code.new
+                    code.object = object
+                    code.name = url[3]
+                  end
+                  html = "
+                    <html>
+                      <head>
+                        <title>#{object.name}/#{code.name} - RubyMush</title>
+                      </head>
+                    </html>
+                    <body>
+                      <form method=\"POST\" enctype=\"multipart/form-data\">
+                        <input type=\"hidden\" name=\"key\" value=\"#{object.external_key}\"/>
+                        <h1>#{object.name}</h1>
+                        <label>Code name:</label><br/>
+                        <input type=\"text\" name=\"name\" value=\"#{code.name}\"/><br/>
+                        <label>Code:</label><br/>
+                        <textarea name=\"code\" rows=\"10\">#{code.code}</textarea>
+                        <br/>
+                        <input type=\"submit\" value=\"Save\"/>
+
+                      </form>
+                    </body>
+
+                  "
+                  http_response(header, "text/html", html)
+                else
+                  atts = []
+                  for att in object.atts
+                    atts << {att.name.to_sym =>  att.value}
+                  end
+                  json = {
+                    id: object.id,
+                    name: object.name,
+                    owner_id: object.owner_id,
+                    location_id: object.location_id,
+                    attributes: atts
+                  }
+                  http_response(header, "text/json", json.to_json)
+                end
+              else
+                http_response(header, "text/json", {message: 'object not found'})
+              end
+            else
+              http_response(header, "text/html", "<h1>RubyMush</h1>")
+            end
+          elsif lines[0].include? 'POST'
+            url = lines[0].split('POST ')[1].split(' HTTP')[0][1..-1].split('/')
+            if url[0] == 'object' and url[2] == 'code' and url[3]
+              object = Thing.where(external_key: url[1]).first
+              if object
+                code = object.codes.where(name: url[3]).first
+                unless code
+                  code = Code.new
+                  code.object = object
+                  code.name = url[3]
+                end
+                # code.code =
+              else
+                http_response(header, "text/html", {message: 'object not found'})
+              end
+            end
+          end
+        end
+        self.close_connection_after_writing
+        return
+      end
+
 			# Login commands
 
-			if command == 'a'
+			if command == 'a' && ARGV[1] == 'test'
 				@user = Thing.where(name: 'Benji', kind: 'player').first
 				connect_user(@user)
 				send_data("Welcome back #{@user.name}!\n")
 				return
 			end
 
-			if command == 'b'
+			if command == 'b' && ARGV[1] == 'test'
 				@user = Thing.where(name: 'test', kind: 'player').first
 				connect_user(@user)
 				send_data("Welcome back #{@user.name}!\n")
@@ -359,19 +484,43 @@ module MushServer
 end
 
 
-# Note that this will block current thread.
 
 task = Concurrent::TimerTask.new {
   # puts "--+ Tick!"
   for code in Code.where(name: 'tick')
       code.thing.execute(code.name, nil)
   end
+
+
 }
 
 task.execution_interval = 5 #=> 5 (default)
 task.timeout_interval = 30  #=> 30 (default)
 
 task.execute
+
+
+
+cmdTask = Concurrent::TimerTask.new {
+  puts "--+ Running queued commands!"
+
+  for cmd in QueuedCommand.all
+    puts cmd
+    thing = cmd.thing
+    if thing
+      thing.execute(cmd.name, cmd.parameters)
+    end
+    cmd.destroy
+  end
+
+
+}
+
+cmdTask.execution_interval = 5 #=> 5 (default)
+cmdTask.timeout_interval = 1000  #=> 30 (default)
+
+cmdTask.execute
+
 
 
 EventMachine.run {
