@@ -7,8 +7,14 @@ require 'colorize'
 require 'v8'
 require 'yaml'
 require 'concurrent'
+require 'bcrypt'
 
 puts "--+ Starting RubyMush..."
+
+
+if ARGV.size == 0
+  abort("Usage: ruby ruby_mush.rb <environment>")
+end
 
 START_LOCATION = 22
 
@@ -16,7 +22,7 @@ CONNECTIONS = Hash.new
 COMMANDS = Array.new
 
 
-db_info = YAML.load(File.open('db/config.yml').read)['development']
+db_info = YAML.load(File.open('db/config.yml').read)[ARGV[0]]
 
 
 ActiveRecord::Base.establish_connection(
@@ -54,6 +60,18 @@ end
 for player in Thing.where(kind: 'player', connected: true)
 	player.connected = false
 	player.save
+end
+
+if ARGV[1] == "update-passwords"
+  puts "--+ Updating passwords:"
+  for player in Thing.where(kind: 'player')
+    salt = BCrypt::Engine.generate_salt
+    encrypted_password = BCrypt::Engine.hash_secret(player.password, salt)
+    player.password = encrypted_password
+    player.salt = salt
+    puts "  + Updated password for: #{player.name}"
+    player.save
+  end
 end
 
 module MushServer
@@ -161,7 +179,9 @@ module MushServer
 
 			if command.downcase.start_with? 'create'
 				if command.split(' ').size == 3
-					@user = Thing.create(name: command.split(' ')[1], password: command.split(' ')[2], last_login_at: Time.now, kind: 'player', location_id: START_LOCATION, last_interaction_at: Time.now)
+          salt = BCrypt::Engine.generate_salt
+          encrypted_password = BCrypt::Engine.hash_secret(command.split(' ')[2], salt)
+					@user = Thing.create(name: command.split(' ')[1], password: encrypted_password, salt: salt, last_login_at: Time.now, kind: 'player', location_id: START_LOCATION, last_interaction_at: Time.now)
 					connect_user(@user)
 					send_data("User created. Welcome!\n")
 				else
@@ -172,10 +192,16 @@ module MushServer
 
 			if command.downcase.start_with? 'connect' or command.downcase.start_with? 'con'
 				if command.split(' ').size == 3
-					@user = Thing.where(name: command.split(' ')[1], password: command.split(' ')[2]).first
+
+					@user = Thing.where(name: command.split(' ')[1]).first
 					if @user
-						connect_user(@user)
-						send_data("Welcome back #{@user.name}!\n")
+            encrypted_password = BCrypt::Engine.hash_secret(command.split(' ')[2], @user.salt)
+            if @user.password == encrypted_password
+  						connect_user(@user)
+  						send_data("Welcome back #{@user.name}!\n")
+            else
+              send_data("Name or password incorrect!\n")
+            end
 					else
 						send_data("Name or password incorrect!\n")
 					end

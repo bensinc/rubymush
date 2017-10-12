@@ -41,4 +41,9 @@ class SafeThing
 
 	def id=(new_id)
 	end
+
+	def contents
+		@thing.things
+	end
+
 end
