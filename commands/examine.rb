@@ -19,6 +19,7 @@ class Examine < Command
 		if @parts.size > 1
 			t = find_thing(thing, @parts[1..-1].join(' '))
 			if t and (thing.wizard? or t.owner == thing)
+				t.reload
 				back = t.name_ref_color.colorize(:light_magenta) + "\n"
 				back += " kind: #{t.kind}\n"
 				if t.wizard?
@@ -92,6 +93,7 @@ class Examine < Command
 				return(back)
 
 			elsif t
+				t.reload
 				back = t.name_ref_color.colorize(:light_magenta) + "\n"
 				if t.wizard?
 					back += " wizard\n".colorize(:red)
