@@ -500,10 +500,10 @@ task.execute
 
 
 cmdTask = Concurrent::TimerTask.new {
-  puts "--+ Running queued commands!"
+  # puts "--+ Running queued commands!"
 
   for cmd in QueuedCommand.all
-    puts cmd
+    # puts cmd
     thing = cmd.thing
     if thing
       thing.execute(cmd.name, cmd.parameters)
