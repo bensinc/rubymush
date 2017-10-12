@@ -511,7 +511,6 @@ cmdTask = Concurrent::TimerTask.new {
     cmd.destroy
   end
 
-
 }
 
 cmdTask.execution_interval = 5 #=> 5 (default)
