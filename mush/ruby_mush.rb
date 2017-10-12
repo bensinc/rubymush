@@ -104,9 +104,7 @@ module MushServer
 
 	def post_init
 		puts "--+ New connection"
-    task = Concurrent::ScheduledTask.execute(0.5) {
-      send_data File.read('welcome.txt') unless @http
-    }
+    send_data File.read('welcome.txt') unless @http
 	end
 
 	def is_number?(obj)
