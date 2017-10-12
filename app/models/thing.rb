@@ -107,7 +107,8 @@ class Thing < ActiveRecord::Base
 			# puts code.code
 			begin
 	     return(cxt.eval(code.code))
-		 rescue Exception => e
+		 rescue V8::Error => e
+				self.cmd("tell #{self.owner_id}=js error on #{self.id}: " + e.message)
 				return(e)
 			end
 		end

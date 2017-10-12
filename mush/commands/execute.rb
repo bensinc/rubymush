@@ -28,17 +28,21 @@ class Execute < Command
 			end
 			t = find_thing(thing, ref)
 			if t
-				code = t.codes.where(name: name).first
-				if code
-					begin
-						t.execute(name, params)
-						return(nil)
-					rescue Exception => e
-						return("Error: #{e}\n")
-						# return("Error: #{e}\n#{e.backtrace}\n")
+				if t.owner == thing.owner or t == thing
+					code = t.codes.where(name: name).first
+					if code
+						begin
+							t.execute(name, params)
+							return(nil)
+						rescue Exception => e
+							return("Error: #{e}\n")
+							# return("Error: #{e}\n#{e.backtrace}\n")
+						end
+					else
+						return("Code #{name} not found on #{t.name_ref}!\n")
 					end
 				else
-					return("Code #{name} not found on #{t.name_ref}!\n")
+					return("Permission denied.\n")
 				end
 			else
 				return("Object not found.\n")
