@@ -1,4 +1,4 @@
-class Exits < ActiveRecord::Migration[5.0]
+class Exits < ActiveRecord::Migration
   def change
     add_column :things, :destination_id, :integer
   end

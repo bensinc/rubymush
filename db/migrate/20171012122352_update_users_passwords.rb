@@ -1,4 +1,4 @@
-class UpdateUsersPasswords < ActiveRecord::Migration[5.0]
+class UpdateUsersPasswords < ActiveRecord::Migration
   def change
     add_column :things, :salt, :string
   end

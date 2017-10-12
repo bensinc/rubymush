@@ -1,4 +1,4 @@
-class CreateObjects < ActiveRecord::Migration[5.0]
+class CreateObjects < ActiveRecord::Migration
   def change
     create_table :things do |t|
       t.column :owner_id, :integer

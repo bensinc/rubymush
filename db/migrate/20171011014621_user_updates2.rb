@@ -1,4 +1,4 @@
-class UserUpdates2 < ActiveRecord::Migration[5.0]
+class UserUpdates2 < ActiveRecord::Migration
   def change
     add_column :things, :doing, :string
   end

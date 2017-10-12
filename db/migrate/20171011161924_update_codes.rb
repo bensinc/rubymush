@@ -1,4 +1,4 @@
-class UpdateCodes < ActiveRecord::Migration[5.0]
+class UpdateCodes < ActiveRecord::Migration
   def change
     add_column :codes, :thing_id, :integer
     add_column :codes, :url, :string

@@ -1,4 +1,4 @@
-class UpdateThingKeys < ActiveRecord::Migration[5.0]
+class UpdateThingKeys < ActiveRecord::Migration
   def change
     add_column :things, :external_key, :string
   end
