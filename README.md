@@ -64,4 +64,6 @@ The server will "tick" every 5-10 seconds and run any code on your objects in a 
 
 Any object that receives a "tell" message will have code on its "receive" code executed, with the message as the parameters.
 
+Any object that enters a room will trigger the room's "entered" code, with the entering object ref as the parameter.
+
 More features to come!

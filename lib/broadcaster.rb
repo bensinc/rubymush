@@ -4,6 +4,10 @@ class Broadcaster
 		@connections = connections
 	end
 	def broadcast_location(message)
-		@thing.location.broadcast(CONNECTIONS, @thing, message)
+		if @thing.location
+			@thing.location.broadcast(CONNECTIONS, @thing, message)
+		else
+			@thing.broadcast(CONNECTIONS, @thing, message)
+		end
 	end
 end

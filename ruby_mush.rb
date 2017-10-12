@@ -63,6 +63,10 @@ module MushServer
 		return @user
 	end
 
+  def set_user(user)
+    @user = user
+  end
+
 	def time_ago_in_words(t)
 		seconds = Time.now.to_i - t.to_i
 		if seconds > 86400
@@ -117,9 +121,11 @@ module MushServer
         if result
           send_data(result)
         end
-        return
+        break
       end
     end
+
+    user.location.entered(user)
 
 		# for c in CONNECTIONS
 		# 	puts "  + Connected user: #{c.get_user}"
@@ -248,6 +254,7 @@ module MushServer
 			destination.broadcast(CONNECTIONS, @user, "#{@user.name} entered from #{@user.location.name}\n")
 			@user.location = thing.destination
 			@user.save
+
       for c in COMMANDS
 				if c.name == 'look'
 					result = c.execute(@user, "look")
@@ -257,6 +264,7 @@ module MushServer
 					break
 				end
 			end
+      destination.entered(thing)
       return
 		end
 

@@ -18,8 +18,12 @@ class Examine < Command
 	def process(thing, command)
 		if @parts.size > 1
 			t = find_thing(thing, @parts[1..-1].join(' '))
-			if t and t.owner == thing
+			if (t and t.owner != thing) && !thing.wizard? && thing != t
 				back = t.name_ref_color.colorize(:light_magenta) + "\n"
+				if t.wizard?
+					back += " wizard\n".colorize(:red)
+				end
+				back += " description: #{t.description}\n"
 				back += " created: #{t.created_at}\n"
 
 				if t.owner
@@ -27,9 +31,13 @@ class Examine < Command
 				else
 					back += " owner: none\n"
 				end
-			elsif t
+
+			elsif t || t and thing.wizard? || thing == t
 					back = t.name_ref_color.colorize(:light_magenta) + "\n"
 					back += " kind: #{t.kind}\n"
+					if t.wizard?
+						back += " wizard\n".colorize(:red)
+					end
 					back += " created: #{t.created_at}\n"
 					back += " description: #{t.description}\n"
 
@@ -52,7 +60,7 @@ class Examine < Command
 
 					if t.things.size > 0
 						back += "Contents:\n".colorize(:light_blue)
-						for o in t.things
+						for o in t.things.where("kind != 'exit'")
 							back += " #{o.name_ref_color}\n"
 						end
 					end

@@ -17,7 +17,7 @@ class Thing < ActiveRecord::Base
 	end
 
 	def user_can_edit?(user)
-		return self == user || self.owner == user || self == user
+		return self == user || self.owner == user || user.wizard?
 	end
 
 	def broadcast(connections, user, message)
@@ -41,9 +41,21 @@ class Thing < ActiveRecord::Base
 		# puts "#{self.name_ref} received #{message}"
 		em = CONNECTIONS[self.id]
 		if em
+			em.set_user(self)
 			em.send_data("#{from.name}: #{message}\n")
 		end
 		self.execute('receive', message)
+	end
+
+	def receive_raw_message(from, message)
+		# puts "#{self.name_ref} received raw #{message}"
+		em = CONNECTIONS[self.id]
+		if em
+			em.set_user(self)
+			em.send_data(message + "\n")
+		end
+		self.execute('receive', message)
+
 	end
 
 
@@ -106,6 +118,10 @@ class Thing < ActiveRecord::Base
 		a = self.atts.where(name: name).first
 		return a.value if a
 		return nil
+	end
+
+	def entered(thing)
+		self.execute('entered', thing.id)
 	end
 
 
