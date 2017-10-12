@@ -75,9 +75,10 @@ class Examine < Command
 				if t.codes.size > 0 # && t.owner == thing
 					back += "Code:\n".colorize(:light_blue)
 					for code in t.codes
-						back += " #{code.name}: ".colorize(:blue)
+						back += "#{code.name}: ".colorize(:blue)
 						back += "\n" if code.code.include?("\n")
 						back += "#{code.code}\n"
+						back += "\n" if code.code.include?("\n")
 					end
 				end
 
