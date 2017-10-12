@@ -6,6 +6,7 @@ class Thing < ActiveRecord::Base
 	has_many :codes
 	has_many :actions
 	has_many :atts
+
 	def name_ref
 		return "#{self.name} (#{self.id})"
 	end
@@ -63,7 +64,7 @@ class Thing < ActiveRecord::Base
 		# puts "Execute: #{name}, #{params}"
 		code = self.codes.where(name: name).first
     cxt = V8::Context.new
-    cxt['me'] = self
+    cxt['me'] = SafeThing.new(self)
 		cxt['params'] = params
 		cxt['mush'] = MushInterface.new(self)
 		# puts code.code
@@ -83,5 +84,6 @@ class Thing < ActiveRecord::Base
 		return a.value if a
 		return nil
 	end
+
 
 end

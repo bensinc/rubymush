@@ -30,6 +30,7 @@ require_relative 'models/thing.rb'
 require_relative 'models/code.rb'
 require_relative 'models/action.rb'
 require_relative 'models/att.rb'
+require_relative 'lib/safe_thing.rb'
 
 require_relative 'lib/mush_interface.rb'
 
