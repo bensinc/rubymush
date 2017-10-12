@@ -18,7 +18,16 @@ class Examine < Command
 	def process(thing, command)
 		if @parts.size > 1
 			t = find_thing(thing, @parts[1..-1].join(' '))
-			if t
+			if t and t.owner == thing
+				back = t.name_ref_color.colorize(:light_magenta) + "\n"
+				back += " created: #{t.created_at}\n"
+
+				if t.owner
+					back += " owner: #{t.owner.name_ref_color}\n"
+				else
+					back += " owner: none\n"
+				end
+			elsif t
 					back = t.name_ref_color.colorize(:light_magenta) + "\n"
 					back += " kind: #{t.kind}\n"
 					back += " created: #{t.created_at}\n"
