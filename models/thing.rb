@@ -105,7 +105,7 @@ class Thing < ActiveRecord::Base
 			begin
 	     return(cxt.eval(code.code))
 		 rescue Exception => e
-				return(e + "\n")
+				return(e)
 			end
 		end
 	end
