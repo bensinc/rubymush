@@ -26,7 +26,7 @@ class Look < Command
 			# puts "--+ Look: #{t.name_ref}: #{t.description}"
 			back = "\n"
 			if t.description
-				back += "[ " + t.name.colorize(:light_magenta) + " ]\n" + t.description + "\n"
+				back += "[ " + t.name.colorize(:light_magenta) + " ]\n" + format(t.description) + "\n"
 			else
 				back += "[ " + "#{t.name}".colorize(:light_magenta) + " ]\n" + "You see nothing special.\n"
 			end

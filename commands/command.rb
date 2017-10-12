@@ -62,5 +62,9 @@ class Command
 		end
 	end
 
+	def format(text)
+		text.gsub('\\n', "\n").gsub('\\t', "\t")
+	end
+
 
 end

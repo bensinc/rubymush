@@ -23,13 +23,29 @@ class Thing < ActiveRecord::Base
 	def broadcast(connections, user, message)
 		for thing in self.things.where(["id != ?", self.id])
 			# puts "Found: #{thing.name}"
-			em = connections[thing.id]
-			if em and em.get_user != user
-				# puts "--+ Broadcasting to: #{em}"
-				em.send_data(message)
+
+			if thing.kind == 'object' and thing != self
+				# puts "EXECUTE: #{thing.name_ref} - #{self.name_ref}"
+				# thing.execute('receive', message)
+			else
+				em = connections[thing.id]
+				if em and em.get_user != user
+					# puts "--+ Broadcasting to: #{em}"
+					em.send_data(message)
+				end
 			end
 		end
 	end
+
+	def receive_message(from, message)
+		# puts "#{self.name_ref} received #{message}"
+		em = CONNECTIONS[self.id]
+		if em
+			em.send_data("#{from.name}: #{message}\n")
+		end
+		self.execute('receive', message)
+	end
+
 
 	def set_code(name, code)
 		c = self.codes.where(name: name).first
@@ -68,12 +84,14 @@ class Thing < ActiveRecord::Base
 	def execute(name, params)
 		# puts "Execute: #{name}, #{params}"
 		code = self.codes.where(name: name).first
-    cxt = V8::Context.new
-    cxt['me'] = SafeThing.new(self)
-		cxt['params'] = params
-		cxt['mush'] = MushInterface.new(self)
-		# puts code.code
-    cxt.eval(code.code)
+		if code
+	    cxt = V8::Context.new
+	    cxt['me'] = SafeThing.new(self)
+			cxt['params'] = params
+			cxt['mush'] = MushInterface.new(self)
+			# puts code.code
+	    cxt.eval(code.code)
+		end
 	end
 
 	def set(name, value)

@@ -328,7 +328,7 @@ end
 # Note that this will block current thread.
 
 task = Concurrent::TimerTask.new {
-  puts "--+ Tick!"
+  # puts "--+ Tick!"
   for code in Code.where(name: 'tick')
       code.thing.execute(code.name, nil)
   end

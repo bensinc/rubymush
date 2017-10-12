@@ -33,8 +33,8 @@ class Describe < Command
 			end
 
 		else
-			return("Usage: description <object name or ref>=<description>")
-		end	
+			return("Usage: description <object name or ref>=<description>\n")
+		end
 	end
 
 	def name
