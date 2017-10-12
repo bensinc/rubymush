@@ -102,7 +102,11 @@ class Thing < ActiveRecord::Base
 			cxt['params'] = params
 			cxt['mush'] = MushInterface.new(self)
 			# puts code.code
-	    cxt.eval(code.code)
+			begin
+	     return(cxt.eval(code.code))
+		 rescue Exception => e
+				return(e + "\n")
+			end
 		end
 	end
 
