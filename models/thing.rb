@@ -11,6 +11,11 @@ class Thing < ActiveRecord::Base
 		return "#{self.name} (#{self.id})"
 	end
 
+
+	def name_ref_color
+		return "#{self.name} " + "(#{self.id})".colorize(:light_black)
+	end
+
 	def user_can_edit?(user)
 		return self == user || self.owner == user || self == user
 	end

@@ -26,15 +26,18 @@ class Look < Command
 			# puts "--+ Look: #{t.name_ref}: #{t.description}"
 			back = "\n"
 			if t.description
-				back << t.name_ref + "\n" + t.description + "\n"
+				back += "[ " + t.name.colorize(:light_magenta) + " ]\n" + t.description + "\n"
 			else
-				back << "#{t.name_ref}\nYou see nothing special.\n"
+				back += "[ " + "#{t.name}".colorize(:light_magenta) + " ]\n" + "You see nothing special.\n"
 			end
 
-			if t.kind != 'player'
-
-				for o in t.things.where(["kind != 'exit' and id != ?", thing.id])
-					back << "#{o.name_ref}\n" if o.kind == 'object' || (o.kind == 'player' && o.connected?)
+			if t.kind != 'player' && t.location == nil
+				if t.things.where(["kind != 'exit' and id != ?", thing.id]).size > 0
+					back += "Things here:\n".colorize(:blue)
+					for o in t.things.where(["kind != 'exit' and id != ?", thing.id])
+						back += " #{o.name}\n".colorize(:light_blue) if o.kind == 'object'
+						back += " #{o.name}\n".colorize(:light_green) if o.kind == 'player' && o.connected?
+					end
 				end
 
 				exits = Thing.where(location_id: t.id, kind: 'exit')
@@ -42,14 +45,14 @@ class Look < Command
 				if exits.size > 0
 
 					# puts "Exits: #{exits.size}"
-					back << "Exits:\n"
+					back += "Exits:\n".colorize(:cyan)
 					list = ""
 					for ex in exits
 						# puts "#{ex.name}, #{ex.id}, #{ex.location_id}"
-						list << ex.name << ", "
+						list += ex.name.colorize(:light_cyan) << ", "
 					end
 					list.chop!.chop!
-					back << "#{list}\n"
+					back << " #{list}\n"
 				end
 			end
 			return(back)

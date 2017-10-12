@@ -22,9 +22,9 @@ class Say < Command
 		message = @parts[1..-1].join(' ')
 		message = command[1..-1] if command.start_with?('"')
 		b = Broadcaster.new(thing, CONNECTIONS)
-		b.broadcast_location("#{thing.name} says, \"#{message}\"\n")
+		b.broadcast_location("#{thing.name} says, ".colorize(:light_blue) +"\"#{message}\"\n")
 		# thing.location.broadcast(CONNECTIONS, thing, "#{thing.name} says, \"#{message}\"\n")
-		return("You said, \"#{message}\"\n")
+		return("You said, ".colorize(:light_blue) +  "\"#{message}\"\n")
 	end
 
 	def name

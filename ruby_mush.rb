@@ -299,7 +299,7 @@ module MushServer
       return
     end
 
-		send_data("What was that, #{@user.name}?\n")
+		send_data("What was that, #{@user.name}?\n".colorize(:red))
 
 
 

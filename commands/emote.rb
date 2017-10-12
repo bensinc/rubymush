@@ -20,8 +20,8 @@ class Emote < Command
 	def process(thing, command)
 		message = @parts[1..-1].join(' ')
 		message = command[1..-1] if command.start_with?(':')
-		thing.location.broadcast(CONNECTIONS, thing, "#{thing.name} #{message}\n")
-		return("#{thing.name} #{message}\n")
+		thing.location.broadcast(CONNECTIONS, thing, "#{thing.name} ".colorize(:light_blue) + "#{message}\n")
+		return("#{thing.name} ".colorize(:light_blue) + "#{message}\n")
 	end
 
 	def name
