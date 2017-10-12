@@ -413,7 +413,7 @@ module MushServer
 					break
 				end
 			end
-      destination.entered(thing)
+      destination.entered(@user)
       return
 		end
 

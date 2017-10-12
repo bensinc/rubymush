@@ -97,20 +97,20 @@ class Thing < ActiveRecord::Base
 
 
 	def execute(name, params)
-		# puts "Execute: #{name}, #{params}"
+		puts "Execute: #{name}, #{params}"
 		code = self.codes.where(name: name).first
 		if code
 	    cxt = V8::Context.new(timeout: 10000)
 	    cxt['me'] = SafeThing.new(self)
 			cxt['params'] = params
 			cxt['mush'] = MushInterface.new(self)
-			# puts code.code
-			begin
+			puts code.code
+			# begin
 	     return(cxt.eval(code.code))
-		 rescue V8::Error => e
-				self.cmd("tell #{self.owner_id}=js error on #{self.id}: " + e.message)
+		#  rescue V8::Error => e
+				# self.cmd("tell #{self.owner_id}=js error on #{self.id}: " + e.message)
 				return(e)
-			end
+			# end
 		end
 	end
 
