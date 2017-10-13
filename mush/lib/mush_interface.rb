@@ -23,6 +23,7 @@ class MushInterface
 			else
 				return SafeThing.new(Thing.where(["name like ? and location_id in (?)", "#{q}%", [@thing.id, @thing.location_id]]).first)
 			end
+			return nil
 	end
 
 	def fetch(url)

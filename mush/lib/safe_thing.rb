@@ -47,7 +47,7 @@ class SafeThing
 	end
 
 	def action(name, params)
-		puts "ACTION: #{name}, #{params}"
+		# puts "ACTION: #{name}, #{params}"
 		if @thing.kind == 'object'
 			action = @thing.actions.where(name: name).first
 			if !action and @thing.location and @thing.location.kind == 'object'
@@ -59,7 +59,7 @@ class SafeThing
 					break if action
 				end
 			end
-			puts "Found action: #{action.thing.name_ref}, #{action.name}, #{action.code}"
+			# puts "Found action: #{action.thing.name_ref}, #{action.name}, #{action.code}"
 			if action
 				action.thing.execute(self, action.code, params)
 			end
