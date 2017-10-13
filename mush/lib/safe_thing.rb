@@ -51,6 +51,9 @@ class SafeThing
 		# puts "ACTION: #{name}, #{params}"
 		if @thing.kind == 'object'
 			action = @thing.actions.where(name: name).first
+			if !action and @thing.location and @thing.location.kind == 'object'
+				action = @thing.location.actions.where(name: name).first
+			end
 			if action
 				code = @thing.codes.where(name: action.code).first
 				@thing.execute(self, code.name, params)
