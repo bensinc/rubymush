@@ -54,7 +54,7 @@ class Thing < ActiveRecord::Base
 
 	def receive_raw_message(from, message)
 		message = '' unless message
-		# puts "#{self.name_ref} received raw #{message}"
+		puts "#{self.name_ref} received raw #{message}"
 		em = CONNECTIONS[self.id]
 		if em
 			em.set_user(self)
