@@ -46,6 +46,11 @@ class SafeThing
 		@thing.things
 	end
 
+	def found
+		return true if @thing
+		return false
+	end
+
 	def action(name, params)
 		# puts "ACTION: #{name}, #{params}"
 		if @thing.kind == 'object'
