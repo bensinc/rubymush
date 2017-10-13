@@ -41,6 +41,8 @@ class Thing < ActiveRecord::Base
 	end
 
 	def receive_message(from, message)
+		message = '' unless message
+
 		# puts "#{self.name_ref} received #{message}"
 		em = CONNECTIONS[self.id]
 		if em
@@ -51,6 +53,7 @@ class Thing < ActiveRecord::Base
 	end
 
 	def receive_raw_message(from, message)
+		message = '' unless message
 		# puts "#{self.name_ref} received raw #{message}"
 		em = CONNECTIONS[self.id]
 		if em
