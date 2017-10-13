@@ -8,6 +8,9 @@
 		<button class="pull-right btn btn-primary" id="save-description">Save</button>
 	</div>
 <br/>
+
+<% if @thing.codes.size > 0 %>
+
 	<h3>Attributes</h3>
 	<% for att in @thing.atts %>
 		<div class="inline-form attribute-field" data-name="<%= att.name %>">
@@ -17,8 +20,11 @@
 		</div>
 		<br/>
 	<% end %>
+	
+<% end %>
 
 
+<% if @thing.codes.size > 0 %>
 	<h3>Code</h3>
 	<% for code in @thing.codes %>
 		<div class="inline-form code-field" data-name="<%= code.name %>">
@@ -28,6 +34,7 @@
 		</div>
 		<br/>
 	<% end %>
+<% end %>
 
 <% else %>
 	<h3>Object not found!</h3>

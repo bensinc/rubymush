@@ -23,7 +23,7 @@ class SetValue < Command
 			t = find_thing(thing, ref)
 
 			if t
-				if t.user_can_edit?(thing)
+				if t.user_can_edit?(thing)					
 					t.set(name, value)
 					t.save
 					return("Value set: #{t.name_ref}:#{name} = #{value}.\n")

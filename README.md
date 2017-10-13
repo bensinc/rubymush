@@ -44,9 +44,9 @@ Talker says, "Hello!"
 
 Special notes:
 
-Inside your js code, "me" refers to the object the code is running on. "Me" has some special functions:
+Inside your js code, "me" refers to the object the code is running on. "Actor" is the person or object that triggered the code. Me, Actor, and any other MUSH object you find in js, has some special functions:
 
-* To run normal user commands, use: me.cmd("command")
+* To run normal user commands (this doesn't work on players unless the player owns the object running the code), use: me.cmd("command")
 * Run an action: me.action("name", "params")
 * Set an attribute: me.set('name', 'value')
 * Get an attribute: me.get('name')
