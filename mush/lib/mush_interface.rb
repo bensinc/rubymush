@@ -42,6 +42,13 @@ class MushInterface
 		end
 	end
 
+	def output(q, message)
+		t = find(q)
+		if t
+			Thing.find(t.id).receive_raw_message(@thing, message)
+		end
+	end
+
 
 
 end
