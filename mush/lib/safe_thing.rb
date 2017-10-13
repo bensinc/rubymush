@@ -46,17 +46,22 @@ class SafeThing
 		@thing.things
 	end
 
-
 	def action(name, params)
-		# puts "ACTION: #{name}, #{params}"
+		puts "ACTION: #{name}, #{params}"
 		if @thing.kind == 'object'
 			action = @thing.actions.where(name: name).first
 			if !action and @thing.location and @thing.location.kind == 'object'
 				action = @thing.location.actions.where(name: name).first
 			end
+			if !action and @thing.location and @thing.location.kind == 'object'
+				for o in @thing.location.things.where(kind: 'object')
+					action = o.actions.where(name: name).first
+					break if action
+				end
+			end
+			puts "Found action: #{action.thing.name_ref}, #{action.name}, #{action.code}"
 			if action
-				code = @thing.codes.where(name: action.code).first
-				@thing.execute(self, code.name, params)
+				action.thing.execute(self, action.code, params)
 			end
 		end
 	end
