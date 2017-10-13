@@ -47,7 +47,7 @@ class Thing < ActiveRecord::Base
 			em.set_user(self)
 			em.send_data("#{from.name}: #{message}\n")
 		end
-		self.execute('receive', message)
+		self.execute(from, 'receive', message)
 	end
 
 	def receive_raw_message(from, message)
@@ -96,12 +96,13 @@ class Thing < ActiveRecord::Base
 	end
 
 
-	def execute(name, params)
+	def execute(from, name, params)
 		# puts "Execute: #{name}, #{params}"
 		code = self.codes.where(name: name).first
 		if code
 	    cxt = V8::Context.new(timeout: 10000)
 	    cxt['me'] = SafeThing.new(self)
+			cxt['actor'] = SafeThing.new(from)
 			cxt['params'] = params
 			cxt['mush'] = MushInterface.new(self)
 			# puts code.code
@@ -129,7 +130,7 @@ class Thing < ActiveRecord::Base
 	end
 
 	def entered(thing)
-		self.execute('entered', thing.id)
+		self.execute(thing, 'entered', thing.id)
 	end
 
 	def reset_key

@@ -1,7 +1,7 @@
 class ThingsController < ApplicationController
   skip_before_filter :verify_authenticity_token
   def show
-    @thing = Thing.where(external_key: params[:key]).first unless params[:key].blank?
+    @thing = Thing.where(external_key: params[:key], kind: 'object').first unless params[:key].blank?
   end
 
   def update_description

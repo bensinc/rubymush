@@ -53,7 +53,7 @@ class SafeThing
 			action = @thing.actions.where(name: name).first
 			if action
 				code = @thing.codes.where(name: action.code).first
-				@thing.execute(code.name, params)
+				@thing.execute(self, code.name, params)
 			end
 		end
 	end

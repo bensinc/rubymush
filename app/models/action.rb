@@ -5,7 +5,7 @@ class Action < ActiveRecord::Base
 		code = self.thing.codes.where(name: self.code).first
 		if code
 			begin
-				self.action.thing.execute(self.code, command.split(' ')[1..-1].join(' '))
+				self.action.thing.execute(self.thing, self.code, command.split(' ')[1..-1].join(' '))
 				return(nil)
 			rescue Exception => e
 				return("Error: #{e}\n")

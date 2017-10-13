@@ -445,7 +445,7 @@ module MushServer
       code = action.thing.codes.where(name: action.code).first
       if code
         begin
-          action.thing.execute(action.code, command.split(' ')[1..-1].join(' '))
+          action.thing.execute(@user, action.code, command.split(' ')[1..-1].join(' '))
           return(nil)
         rescue Exception => e
           return("Error: #{e}\n")
@@ -486,7 +486,7 @@ end
 task = Concurrent::TimerTask.new {
   # puts "--+ Tick!"
   for code in Code.where(name: 'tick')
-      code.thing.execute(code.name, nil)
+      code.thing.execute(nil, code.name, nil)
   end
 
 
@@ -506,7 +506,7 @@ cmdTask = Concurrent::TimerTask.new {
     # puts cmd
     thing = cmd.thing
     if thing
-      thing.execute(cmd.name, cmd.parameters)
+      thing.execute(nil, cmd.name, cmd.parameters)
     end
     cmd.destroy
   end

@@ -13,7 +13,7 @@ class MushInterface
 	def find(q)
 			q = "#{q}"
 			q.strip!
-			puts "--+ Finding thing: #{q}"
+			# puts "--+ Finding thing: #{q}"
 			if is_number?(q)
 				return SafeThing.new(Thing.where(id: q).first)
 			elsif q.downcase == 'here'
