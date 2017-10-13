@@ -55,6 +55,7 @@ Inside your js code, "me" refers to the object the code is running on. "Me" has 
 A "mush" object is also available that provides additional functions:
 
 * Find another object: mush.find('name or id') - Has the same properties/functions as "me"
+* Output a message to an object: mush.output('ref', 'message')
 * Fetch a JSON URL: mush.fetch('url');
 
 Special notes:

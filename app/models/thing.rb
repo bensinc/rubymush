@@ -45,7 +45,7 @@ class Thing < ActiveRecord::Base
 		em = CONNECTIONS[self.id]
 		if em
 			em.set_user(self)
-			em.send_data("#{from.name}: #{message}\n")
+			em.send_data("#{from.name}: #{message.gsub("\\n", "\n")}\n")
 		end
 		self.execute(from, 'receive', message)
 	end
@@ -55,9 +55,9 @@ class Thing < ActiveRecord::Base
 		em = CONNECTIONS[self.id]
 		if em
 			em.set_user(self)
-			em.send_data(message + "\n")
+			em.send_data(message.gsub("\\n", "\n") + "\n")
 		end
-		self.execute('receive', message)
+		self.execute(from, 'receive', message)
 
 	end
 
@@ -109,6 +109,11 @@ class Thing < ActiveRecord::Base
 			begin
 	     return(cxt.eval(code.code))
 		 rescue V8::Error => e
+			 puts "ERROR on #{self.name_ref}"
+
+			 puts e.message
+			 puts e.backtrace
+
 				self.cmd("tell #{self.owner_id}=js error on #{self.id}: " + e.message)
 				return(e)
 			end
