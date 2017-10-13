@@ -449,6 +449,7 @@ module MushServer
           return(nil)
         rescue Exception => e
           return("Error: #{e}\n")
+          puts e.backtrace
         end
       else
         return("Code #{name} not found on #{action.thing.name_ref}!\n")

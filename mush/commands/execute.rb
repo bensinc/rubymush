@@ -28,15 +28,15 @@ class Execute < Command
 			end
 			t = find_thing(thing, ref)
 			if t
-				if t.owner == thing.owner or t == thing
+				if t.owner == thing.owner or t == thing or t.owner == thing
 					code = t.codes.where(name: name).first
 					if code
 						begin
-							t.execute(name, params)
+							t.execute(thing, name, params)
 							return(nil)
 						rescue Exception => e
 							return("Error: #{e}\n")
-							# return("Error: #{e}\n#{e.backtrace}\n")
+							puts("Error: #{e}\n#{e.backtrace}\n")
 						end
 					else
 						return("Code #{name} not found on #{t.name_ref}!\n")

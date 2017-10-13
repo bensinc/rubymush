@@ -1,6 +1,7 @@
 class SafeThing
-	def initialize(thing)
+	def initialize(thing, runner)
 		@thing = thing
+		@runner = runner
 	end
 
 	def id
@@ -24,7 +25,8 @@ class SafeThing
 	end
 
 	def set(name, value)
-		@thing.set(name, value)
+		# puts "Set #{value} on #{@thing.name} for #{@runner.name}"
+		@thing.set(name, value) if @thing == @runner || @runner.owner == @thing || @thing.owner == @runner.owner
 	end
 
 	def get(name)
@@ -36,7 +38,7 @@ class SafeThing
 	end
 
 	def cmd(command)
-		@thing.cmd(command)
+		@thing.cmd(command) if @thing == @runner || @thing.owner == @runner || @thing.owner == @runner.owner
 	end
 
 	def id=(new_id)

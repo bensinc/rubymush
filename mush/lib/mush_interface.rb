@@ -15,13 +15,13 @@ class MushInterface
 			q.strip!
 			# puts "--+ Finding thing: #{q}"
 			if is_number?(q)
-				return SafeThing.new(Thing.where(id: q).first)
+				return SafeThing.new(Thing.where(id: q).first, @thing)
 			elsif q.downcase == 'here'
-				return SafeThing.new(thing.location)
+				return SafeThing.new(thing.location, @thing)
 			elsif q.downcase == 'me'
-				return SafeThing.new(@thing)
+				return SafeThing.new(@thing, @thing)
 			else
-				return SafeThing.new(Thing.where(["name like ? and location_id in (?)", "#{q}%", [@thing.id, @thing.location_id]]).first)
+				return SafeThing.new(Thing.where(["name like ? and location_id in (?)", "#{q}%", [@thing.id, @thing.location_id]]).first, @thing)
 			end
 			return nil
 	end

@@ -21,7 +21,9 @@ class Teleport < Command
 			dest = find_thing(thing, command.split('=')[1].strip)
 			return("Target not found!\n") unless t
 			return("Destination not found!\n") unless dest
-			if thing.wizard? or t.location.owner == thing
+			# puts "tp #{t.name} to #{dest.name}"
+			# puts "thing: #{thing.name}"
+			if thing.wizard? or t.location.owner == thing or t.location == thing
 				t.location.broadcast(CONNECTIONS, thing, "#{thing.name} has left.\n")
 				t.location = dest
 				t.save

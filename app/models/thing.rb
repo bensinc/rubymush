@@ -86,6 +86,7 @@ class Thing < ActiveRecord::Base
 	end
 
 	def cmd(command)
+		# puts "Thing command: #{command}"
 		for c in COMMANDS
 			# puts "Checking: #{c}"
 			if c.should_respond?(command)
@@ -106,8 +107,8 @@ class Thing < ActiveRecord::Base
 		code = self.codes.where(name: name).first
 		if code
 	    cxt = V8::Context.new(timeout: 10000)
-	    cxt['me'] = SafeThing.new(self)
-			cxt['actor'] = SafeThing.new(from)
+	    cxt['me'] = SafeThing.new(self, self)
+			cxt['actor'] = SafeThing.new(from, self)
 			cxt['params'] = params
 			cxt['mush'] = MushInterface.new(self)
 			# puts code.code
