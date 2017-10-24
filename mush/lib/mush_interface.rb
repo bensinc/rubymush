@@ -50,6 +50,11 @@ class MushInterface
 		end
 	end
 
+	# Catch missing methods and map to commands
+	# def method_missing(symbol)
+	# 	puts "--+ Method missing called: #{symbol}"
+	# end
+
 
 
 end

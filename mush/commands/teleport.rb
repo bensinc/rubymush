@@ -45,7 +45,7 @@ class Teleport < Command
 					thing.save
 					thing.cmd("look")
 					thing.receive_raw_message(thing, thing.cmd("look"))
-					dest.entered(thing)
+					t.entered(thing)
 
 					return("Teleported to #{t.name_ref}.\n")
 				else

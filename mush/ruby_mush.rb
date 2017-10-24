@@ -16,11 +16,14 @@ if ARGV.size == 0
   abort("Usage: ruby ruby_mush.rb <environment>")
 end
 
-START_LOCATION = 22
+# Config
+START_LOCATION = 22 # Starting room for new users
+PORT = 8081 # TCP port
+
+
 
 CONNECTIONS = Hash.new
 COMMANDS = Array.new
-
 
 db_info = YAML.load(File.open('../config/database.yml').read)[ARGV[0]]
 
@@ -362,14 +365,12 @@ module MushServer
 end
 
 
-
+# Run tick code on each thing
 task = Concurrent::TimerTask.new {
   # puts "--+ Tick!"
   for code in Code.where(name: 'tick')
       code.thing.execute(nil, code.name, nil)
   end
-
-
 }
 
 task.execution_interval = 5 #=> 5 (default)
@@ -378,7 +379,7 @@ task.timeout_interval = 30  #=> 30 (default)
 task.execute
 
 
-
+# Run any tasks queued from web interface
 cmdTask = Concurrent::TimerTask.new {
   # puts "--+ Running queued commands!"
 
@@ -402,5 +403,5 @@ cmdTask.execute
 
 EventMachine.run {
 	puts "--+ Started!"
-	EventMachine.start_server "0.0.0.0", 8081, MushServer
+	EventMachine.start_server "0.0.0.0", PORT, MushServer
 }
