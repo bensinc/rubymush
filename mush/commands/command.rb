@@ -12,9 +12,7 @@ class Command
 	def should_respond?(c)
 		# puts "Should respond? #{c}"
 		parts = c.split(' ')
-		if prefixes.include?(parts[0].downcase) or (shortcut and c.start_with? shortcut)
-			return true
-		end
+		prefixes.include?(parts[0].downcase) || (shortcut && c.start_with?(shortcut))
 	end
 
 	def help
@@ -49,6 +47,7 @@ class Command
 	end
 
 	def find_thing(thing, q)
+    return unless q
 		q.strip!
 		# puts "--+ Finding thing: #{q}"
 		if is_number?(q)
